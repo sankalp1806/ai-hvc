@@ -9,6 +9,9 @@ interface ResearchRequest {
   industry: string;
   aiService: string;
   companySize?: string;
+  location?: string;
+  freeTextNotes?: string;
+  timeHorizonYears?: number;
 }
 
 serve(async (req) => {
@@ -17,125 +20,386 @@ serve(async (req) => {
   }
 
   try {
-    const { industry, aiService, companySize } = await req.json() as ResearchRequest;
+    const { industry, aiService, companySize, location, freeTextNotes, timeHorizonYears = 3 } = await req.json() as ResearchRequest;
 
-    console.log(`Researching AI solutions for: ${industry} - ${aiService} - ${companySize || 'any size'}`);
+    console.log(`Researching AI solutions for: ${industry} - ${aiService} - ${companySize || 'any size'} - ${location || 'global'}`);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are an expert AI business analyst specializing in AI service providers and implementation strategies. Your task is to research and provide comprehensive information about AI solutions for businesses.
+    const systemPrompt = `You are an expert AI business analyst and strategic consultant specializing in AI implementation strategies, ROI analysis, and market research. Your task is to generate comprehensive, structured analytical reports for businesses evaluating AI solutions.
 
-IMPORTANT: Respond ONLY with valid JSON. Do not include any markdown, code blocks, or additional text.`;
+CRITICAL INSTRUCTIONS:
+1. Respond ONLY with valid JSON matching the exact structure provided.
+2. All analysis must be grounded in realistic market data and industry benchmarks.
+3. Provide specific, actionable insights rather than generic advice.
+4. All monetary values should be in USD unless otherwise specified.
+5. Include realistic ranges rather than single point estimates.
+6. Consider the specific industry, company size, and regional context in all recommendations.`;
 
-    const userPrompt = `Research AI solutions for the following business context:
+    const userPrompt = `Generate a comprehensive AI implementation analysis report for:
+
+CONTEXT:
 - Industry: ${industry}
 - AI Service Type: ${aiService}
-- Company Size: ${companySize || 'Various sizes'}
+- Company Size: ${companySize || 'Medium (51-500 employees)'}
+- Location/Region: ${location || 'Global / Not Specified'}
+- Time Horizon: ${timeHorizonYears} years
+${freeTextNotes ? `- Additional Context: ${freeTextNotes}` : ''}
 
-Provide a comprehensive analysis in the following JSON format:
+Produce a complete structured analysis in the following JSON format. Be thorough and realistic:
+
 {
-  "summary": "A 2-3 sentence overview of AI solutions available for this use case",
-  "marketInsights": {
-    "adoptionRate": "percentage of similar companies using this AI type",
-    "averageROI": "typical ROI range",
-    "implementationTimeframe": "typical implementation period"
+  "validationSummary": {
+    "status": "OK",
+    "issues": [],
+    "handlingNotes": ""
   },
-  "providers": [
+  "contextOverview": {
+    "scenarioSummary": {
+      "industry": "${industry}",
+      "serviceType": "${aiService}",
+      "companySize": "${companySize || 'Medium (51-500 employees)'}",
+      "maturityAssumptions": "Brief assessment of typical AI maturity for this profile",
+      "keyGoals": ["goal 1", "goal 2", "goal 3"]
+    },
+    "locationContext": {
+      "region": "${location || 'Global'}",
+      "currency": "USD",
+      "regulatoryEnvironment": "Description of relevant regulations (GDPR, CCPA, industry-specific)",
+      "costModifiers": "Regional cost factors affecting the analysis",
+      "marketMaturity": "Assessment of AI adoption in this region"
+    }
+  },
+  "executiveSummary": {
+    "overallRecommendation": "Clear go/no-go recommendation with reasoning",
+    "topRecommendation": "Primary solution approach recommended",
+    "estimatedBenefitProfile": "Summary of expected benefits",
+    "biggestRisks": ["risk 1", "risk 2"],
+    "roiRange": {
+      "conservative": "X%",
+      "optimistic": "Y%"
+    },
+    "paybackPeriod": "X-Y months",
+    "confidenceLevel": "low/medium/high",
+    "keyTakeaways": ["takeaway 1", "takeaway 2", "takeaway 3", "takeaway 4"]
+  },
+  "keyMetrics": {
+    "financial": [
+      {"name": "Expected ROI", "value": "150-300%", "unit": "%", "timeHorizon": "3 years"},
+      {"name": "Net Present Value", "value": "$50,000-$150,000", "unit": "$", "timeHorizon": "3 years"},
+      {"name": "Total Cost of Ownership", "value": "$30,000-$80,000", "unit": "$", "timeHorizon": "3 years"},
+      {"name": "Break-even Point", "value": "8-14", "unit": "months", "timeHorizon": ""}
+    ],
+    "operational": [
+      {"name": "Hours Saved Per Week", "value": "20-40", "unit": "hours", "timeHorizon": "at maturity"},
+      {"name": "Throughput Improvement", "value": "25-50%", "unit": "%", "timeHorizon": "year 1"},
+      {"name": "Error Reduction", "value": "40-70%", "unit": "%", "timeHorizon": "year 1"}
+    ],
+    "adoption": [
+      {"name": "Process Coverage", "value": "60-80%", "unit": "%", "timeHorizon": "year 1"},
+      {"name": "User Adoption Rate", "value": "70-90%", "unit": "%", "timeHorizon": "6 months"}
+    ]
+  },
+  "visualDescriptions": [
     {
-      "name": "Provider/Platform Name",
-      "description": "Brief description of the service",
-      "website": "website URL",
-      "pricingModel": "subscription/usage-based/enterprise",
-      "plans": [
-        {
-          "name": "Plan name",
-          "price": "Price or price range",
-          "features": ["feature 1", "feature 2", "feature 3"],
-          "bestFor": "Who this plan is best for"
-        }
-      ],
-      "pros": ["advantage 1", "advantage 2"],
-      "cons": ["limitation 1", "limitation 2"],
-      "typicalCostRange": {
-        "small": "$X - $Y/month",
-        "medium": "$X - $Y/month",
-        "enterprise": "Custom pricing"
-      },
-      "implementationComplexity": "low/medium/high",
-      "integrationOptions": ["integration 1", "integration 2"]
+      "chartType": "Line Chart",
+      "title": "ROI Projection Over Time",
+      "xAxis": "Months (0-36)",
+      "yAxis": "Cumulative Net Benefit ($)",
+      "description": "Shows break-even point around month 12-16, with cumulative benefits reaching $X by year 3. Conservative and optimistic scenarios shown as confidence bands."
+    },
+    {
+      "chartType": "Stacked Bar Chart",
+      "title": "Cost vs Benefit Breakdown",
+      "xAxis": "Categories",
+      "yAxis": "Value ($)",
+      "description": "Compares implementation, operational, and hidden costs against labor savings, efficiency gains, and revenue impact."
+    },
+    {
+      "chartType": "Waterfall Chart",
+      "title": "Value Creation Analysis",
+      "xAxis": "Value Drivers",
+      "yAxis": "Cumulative Value ($)",
+      "description": "Shows contribution of each benefit category to total value, from initial investment through to net gain."
     }
   ],
-  "recommendations": {
-    "forSmallBusiness": {
-      "provider": "Recommended provider name",
-      "reason": "Why this is recommended"
-    },
-    "forMediumBusiness": {
-      "provider": "Recommended provider name",
-      "reason": "Why this is recommended"
-    },
-    "forEnterprise": {
-      "provider": "Recommended provider name",
-      "reason": "Why this is recommended"
-    }
-  },
-  "implementationGuide": {
-    "phases": [
+  "comparativeAnalysis": {
+    "applicable": true,
+    "comparisonMatrix": [
       {
-        "phase": "Phase 1: Discovery",
-        "duration": "X weeks",
-        "activities": ["activity 1", "activity 2"]
+        "option": "Option/Solution 1",
+        "cost": "Low/Medium/High or $X-$Y",
+        "roi": "X-Y%",
+        "complexity": "Low/Medium/High",
+        "risk": "Low/Medium/High",
+        "scalability": "Low/Medium/High",
+        "bestFor": "Description of ideal use case"
+      },
+      {
+        "option": "Option/Solution 2",
+        "cost": "Low/Medium/High or $X-$Y",
+        "roi": "X-Y%",
+        "complexity": "Low/Medium/High",
+        "risk": "Low/Medium/High",
+        "scalability": "Low/Medium/High",
+        "bestFor": "Description of ideal use case"
+      },
+      {
+        "option": "Option/Solution 3",
+        "cost": "Low/Medium/High or $X-$Y",
+        "roi": "X-Y%",
+        "complexity": "Low/Medium/High",
+        "risk": "Low/Medium/High",
+        "scalability": "Low/Medium/High",
+        "bestFor": "Description of ideal use case"
       }
     ],
-    "keyConsiderations": ["consideration 1", "consideration 2"],
-    "commonChallenges": ["challenge 1", "challenge 2"],
-    "successFactors": ["factor 1", "factor 2"]
+    "bestForLowBudget": "Recommendation with reasoning",
+    "bestForFastImplementation": "Recommendation with reasoning",
+    "bestForMaximumUpside": "Recommendation with reasoning"
   },
-  "costEstimates": {
-    "small": {
-      "initialSetup": "$X - $Y",
-      "monthlyOperating": "$X - $Y",
-      "yearOneTotal": "$X - $Y",
-      "potentialSavings": "$X - $Y per year"
+  "solutionProviders": [
+    {
+      "name": "Provider Name",
+      "category": "Category (e.g., Enterprise Platform, SMB Tool, Open Source)",
+      "description": "Comprehensive description of the solution",
+      "fitForSize": "small/medium/large/enterprise/all",
+      "fitForIndustry": "How well it fits the selected industry",
+      "strengths": ["strength 1", "strength 2", "strength 3"],
+      "tradeoffs": ["limitation 1", "limitation 2"],
+      "integrationRequirements": "Brief overview of integration needs",
+      "pricingTiers": [
+        {
+          "tierName": "Starter/Basic",
+          "price": "$X/month or $X/year",
+          "features": ["feature 1", "feature 2", "feature 3"],
+          "limitations": ["limit 1", "limit 2"]
+        },
+        {
+          "tierName": "Professional/Growth",
+          "price": "$X/month or $X/year",
+          "features": ["feature 1", "feature 2", "feature 3"],
+          "limitations": ["limit 1"]
+        },
+        {
+          "tierName": "Enterprise",
+          "price": "Custom pricing",
+          "features": ["feature 1", "feature 2", "feature 3", "feature 4"],
+          "limitations": []
+        }
+      ],
+      "websiteUrl": "https://example.com"
+    }
+  ],
+  "costBudgetImpact": {
+    "costBreakdown": {
+      "oneTime": [
+        {"category": "Software/Platform Setup", "amount": "$X - $Y", "notes": ""},
+        {"category": "Implementation Services", "amount": "$X - $Y", "notes": ""},
+        {"category": "Data Preparation", "amount": "$X - $Y", "notes": ""},
+        {"category": "Training", "amount": "$X - $Y", "notes": ""}
+      ],
+      "recurring": [
+        {"category": "Platform Subscription", "amount": "$X - $Y/month", "notes": ""},
+        {"category": "Cloud Infrastructure", "amount": "$X - $Y/month", "notes": ""},
+        {"category": "Maintenance & Support", "amount": "$X - $Y/month", "notes": ""},
+        {"category": "Ongoing Training", "amount": "$X - $Y/year", "notes": ""}
+      ]
     },
-    "medium": {
-      "initialSetup": "$X - $Y",
-      "monthlyOperating": "$X - $Y",
-      "yearOneTotal": "$X - $Y",
-      "potentialSavings": "$X - $Y per year"
+    "companySizeImpact": "How company size affects these costs",
+    "locationImpact": "How the selected region affects costs",
+    "yearOneTotal": "$X - $Y",
+    "yearTwoTotal": "$X - $Y",
+    "yearThreeTotal": "$X - $Y",
+    "totalTCO": "$X - $Y over ${timeHorizonYears} years"
+  },
+  "timeline": {
+    "overviewOptions": {
+      "fastTrack": {
+        "duration": "X-Y weeks",
+        "tradeoffs": "What you sacrifice for speed",
+        "bestFor": "Who should choose this"
+      },
+      "standard": {
+        "duration": "X-Y weeks",
+        "tradeoffs": "Balanced approach details",
+        "bestFor": "Who should choose this"
+      },
+      "comprehensive": {
+        "duration": "X-Y months",
+        "tradeoffs": "What you gain from thoroughness",
+        "bestFor": "Who should choose this"
+      }
     },
-    "enterprise": {
-      "initialSetup": "$X - $Y",
-      "monthlyOperating": "$X - $Y",
-      "yearOneTotal": "$X - $Y",
-      "potentialSavings": "$X - $Y per year"
+    "phases": [
+      {
+        "phaseName": "Discovery & Strategy",
+        "duration": "X-Y weeks",
+        "activities": ["activity 1", "activity 2", "activity 3"],
+        "keyStakeholders": ["role 1", "role 2"],
+        "deliverables": ["deliverable 1", "deliverable 2"]
+      },
+      {
+        "phaseName": "Design & Configuration",
+        "duration": "X-Y weeks",
+        "activities": ["activity 1", "activity 2", "activity 3"],
+        "keyStakeholders": ["role 1", "role 2"],
+        "deliverables": ["deliverable 1", "deliverable 2"]
+      },
+      {
+        "phaseName": "Development & Integration",
+        "duration": "X-Y weeks",
+        "activities": ["activity 1", "activity 2", "activity 3"],
+        "keyStakeholders": ["role 1", "role 2"],
+        "deliverables": ["deliverable 1", "deliverable 2"]
+      },
+      {
+        "phaseName": "Testing & Validation",
+        "duration": "X-Y weeks",
+        "activities": ["activity 1", "activity 2", "activity 3"],
+        "keyStakeholders": ["role 1", "role 2"],
+        "deliverables": ["deliverable 1", "deliverable 2"]
+      },
+      {
+        "phaseName": "Launch & Optimization",
+        "duration": "X-Y weeks",
+        "activities": ["activity 1", "activity 2", "activity 3"],
+        "keyStakeholders": ["role 1", "role 2"],
+        "deliverables": ["deliverable 1", "deliverable 2"]
+      }
+    ]
+  },
+  "risksAndSensitivity": {
+    "risks": [
+      {
+        "category": "Financial",
+        "risk": "Risk description",
+        "likelihood": "Low/Medium/High",
+        "impact": "Low/Medium/High",
+        "mitigation": "Mitigation strategy"
+      },
+      {
+        "category": "Operational",
+        "risk": "Risk description",
+        "likelihood": "Low/Medium/High",
+        "impact": "Low/Medium/High",
+        "mitigation": "Mitigation strategy"
+      },
+      {
+        "category": "Technical",
+        "risk": "Risk description",
+        "likelihood": "Low/Medium/High",
+        "impact": "Low/Medium/High",
+        "mitigation": "Mitigation strategy"
+      },
+      {
+        "category": "Regulatory/Compliance",
+        "risk": "Risk description",
+        "likelihood": "Low/Medium/High",
+        "impact": "Low/Medium/High",
+        "mitigation": "Mitigation strategy"
+      }
+    ],
+    "sensitivityAnalysis": [
+      {
+        "assumption": "Adoption Rate",
+        "baseCase": "70%",
+        "impact": "Each 10% decrease reduces ROI by approximately 15-20%"
+      },
+      {
+        "assumption": "Implementation Timeline",
+        "baseCase": "On schedule",
+        "impact": "Each month delay reduces first-year ROI by approximately 8-12%"
+      },
+      {
+        "assumption": "Labor Cost Savings",
+        "baseCase": "As estimated",
+        "impact": "Each 10% variance directly affects ROI proportionally"
+      }
+    ]
+  },
+  "insightsRecommendations": {
+    "overallVerdict": "Clear recommendation with confidence level",
+    "prioritizedActions": [
+      {
+        "priority": 1,
+        "action": "Action description",
+        "rationale": "Why this matters",
+        "effort": "Low/Medium/High",
+        "impact": "Low/Medium/High"
+      },
+      {
+        "priority": 2,
+        "action": "Action description",
+        "rationale": "Why this matters",
+        "effort": "Low/Medium/High",
+        "impact": "Low/Medium/High"
+      },
+      {
+        "priority": 3,
+        "action": "Action description",
+        "rationale": "Why this matters",
+        "effort": "Low/Medium/High",
+        "impact": "Low/Medium/High"
+      }
+    ],
+    "immediateNextSteps": ["step 1 (0-1 month)", "step 2 (1-2 months)", "step 3 (2-3 months)"],
+    "mediumTermSteps": ["step 1 (3-6 months)", "step 2 (6-12 months)"],
+    "longTermConsiderations": ["consideration 1 (1-2 years)", "consideration 2 (2-3 years)"],
+    "byBudgetLevel": {
+      "lowBudget": "Recommendation for constrained budgets",
+      "mediumBudget": "Recommendation for moderate investment",
+      "highBudget": "Recommendation for maximum capability"
+    },
+    "byRiskAppetite": {
+      "conservative": "Recommendation for risk-averse organizations",
+      "balanced": "Recommendation for moderate risk tolerance",
+      "aggressive": "Recommendation for growth-focused organizations"
     }
   },
-  "timeHorizonOptions": [
-    {
-      "period": "Short-term (3-6 months)",
-      "expectedOutcomes": ["outcome 1", "outcome 2"],
-      "riskLevel": "low/medium/high"
-    },
-    {
-      "period": "Medium-term (6-12 months)",
-      "expectedOutcomes": ["outcome 1", "outcome 2"],
-      "riskLevel": "low/medium/high"
-    },
-    {
-      "period": "Long-term (1-3 years)",
-      "expectedOutcomes": ["outcome 1", "outcome 2"],
-      "riskLevel": "low/medium/high"
-    }
-  ]
+  "methodology": {
+    "approach": "Description of analytical methodology used",
+    "dataSourceTypes": ["Industry benchmarks", "Market research reports", "Case studies", "Vendor data"],
+    "keyAssumptions": [
+      "Assumption 1 with rationale",
+      "Assumption 2 with rationale",
+      "Assumption 3 with rationale"
+    ],
+    "limitations": [
+      "Limitation 1",
+      "Limitation 2"
+    ],
+    "confidenceNotes": "Overall assessment of estimate reliability"
+  },
+  "appendix": {
+    "glossary": [
+      {"term": "ROI", "definition": "Return on Investment - (Benefits - Costs) / Costs × 100"},
+      {"term": "TCO", "definition": "Total Cost of Ownership - All direct and indirect costs"},
+      {"term": "NPV", "definition": "Net Present Value - Future cash flows discounted to present value"}
+    ],
+    "additionalResources": [
+      {"title": "Resource 1", "type": "Article/Guide/Tool", "relevance": "How it helps"}
+    ]
+  },
+  "metadata": {
+    "timeHorizon": "${timeHorizonYears} years",
+    "currency": "USD",
+    "generatedDate": "${new Date().toISOString().split('T')[0]}",
+    "disclaimer": "This analysis is based on market research and industry benchmarks. Actual results may vary based on specific implementation factors. All estimates should be validated against real organizational data before making investment decisions."
+  }
 }
 
-Provide realistic, up-to-date information about actual AI service providers in the market. Include at least 4-5 relevant providers with their actual pricing tiers where known.`;
+IMPORTANT:
+- Include at least 4-5 relevant solution providers with realistic pricing
+- Ensure all metrics and estimates are realistic for the industry and company size
+- Consider the regional context for regulatory and cost factors
+- Provide actionable, specific recommendations rather than generic advice
+- All numerical estimates should be ranges, not single points`;
 
-    console.log("Calling AI gateway for research...");
+    console.log("Calling AI gateway for comprehensive analysis...");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -189,10 +453,8 @@ Provide realistic, up-to-date information about actual AI service providers in t
 
     console.log("Raw AI response received, parsing...");
 
-    // Clean and parse the JSON response
     let researchData;
     try {
-      // Remove any markdown code blocks if present
       let cleanContent = content.trim();
       if (cleanContent.startsWith("```json")) {
         cleanContent = cleanContent.slice(7);
@@ -205,7 +467,7 @@ Provide realistic, up-to-date information about actual AI service providers in t
       cleanContent = cleanContent.trim();
       
       researchData = JSON.parse(cleanContent);
-      console.log("Successfully parsed research data");
+      console.log("Successfully parsed comprehensive research data");
     } catch (parseError) {
       console.error("Failed to parse AI response as JSON:", parseError);
       console.error("Raw content:", content.substring(0, 500));
@@ -222,7 +484,7 @@ Provide realistic, up-to-date information about actual AI service providers in t
       JSON.stringify({ 
         success: true, 
         data: researchData,
-        query: { industry, aiService, companySize }
+        query: { industry, aiService, companySize, location, timeHorizonYears }
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
