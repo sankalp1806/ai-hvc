@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,13 +15,110 @@ interface ResearchRequest {
   timeHorizonYears?: number;
 }
 
+// Input validation constants
+const MAX_INDUSTRY_LENGTH = 100;
+const MAX_SERVICE_LENGTH = 100;
+const MAX_COMPANY_SIZE_LENGTH = 50;
+const MAX_LOCATION_LENGTH = 50;
+const MAX_FREE_TEXT_LENGTH = 2000;
+const MIN_TIME_HORIZON = 1;
+const MAX_TIME_HORIZON = 10;
+
+function sanitizeInput(input: string | undefined, maxLength: number): string {
+  if (!input) return '';
+  // Remove potential prompt injection patterns and limit length
+  return input
+    .slice(0, maxLength)
+    .replace(/[<>{}]/g, '') // Remove potential HTML/JSON injection chars
+    .trim();
+}
+
+function validateRequest(data: ResearchRequest): { valid: boolean; error?: string } {
+  if (!data.industry || typeof data.industry !== 'string' || data.industry.trim().length === 0) {
+    return { valid: false, error: 'Industry is required and must be a non-empty string' };
+  }
+  if (!data.aiService || typeof data.aiService !== 'string' || data.aiService.trim().length === 0) {
+    return { valid: false, error: 'AI Service is required and must be a non-empty string' };
+  }
+  if (data.industry.length > MAX_INDUSTRY_LENGTH) {
+    return { valid: false, error: `Industry must be ${MAX_INDUSTRY_LENGTH} characters or less` };
+  }
+  if (data.aiService.length > MAX_SERVICE_LENGTH) {
+    return { valid: false, error: `AI Service must be ${MAX_SERVICE_LENGTH} characters or less` };
+  }
+  if (data.companySize && data.companySize.length > MAX_COMPANY_SIZE_LENGTH) {
+    return { valid: false, error: `Company size must be ${MAX_COMPANY_SIZE_LENGTH} characters or less` };
+  }
+  if (data.location && data.location.length > MAX_LOCATION_LENGTH) {
+    return { valid: false, error: `Location must be ${MAX_LOCATION_LENGTH} characters or less` };
+  }
+  if (data.freeTextNotes && data.freeTextNotes.length > MAX_FREE_TEXT_LENGTH) {
+    return { valid: false, error: `Free text notes must be ${MAX_FREE_TEXT_LENGTH} characters or less` };
+  }
+  if (data.timeHorizonYears !== undefined) {
+    const horizon = Number(data.timeHorizonYears);
+    if (isNaN(horizon) || horizon < MIN_TIME_HORIZON || horizon > MAX_TIME_HORIZON) {
+      return { valid: false, error: `Time horizon must be between ${MIN_TIME_HORIZON} and ${MAX_TIME_HORIZON} years` };
+    }
+  }
+  return { valid: true };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { industry, aiService, companySize, location, freeTextNotes, timeHorizonYears = 3 } = await req.json() as ResearchRequest;
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      console.error("Missing or invalid authorization header");
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    
+    if (claimsError || !claimsData?.claims) {
+      console.error("JWT validation failed:", claimsError?.message || "No claims returned");
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired authentication token' }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+    console.log(`Authenticated request from user: ${userId}`);
+
+    // Parse and validate request body
+    const requestData = await req.json() as ResearchRequest;
+    const validation = validateRequest(requestData);
+    
+    if (!validation.valid) {
+      console.error("Validation failed:", validation.error);
+      return new Response(
+        JSON.stringify({ error: validation.error }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Sanitize inputs
+    const industry = sanitizeInput(requestData.industry, MAX_INDUSTRY_LENGTH);
+    const aiService = sanitizeInput(requestData.aiService, MAX_SERVICE_LENGTH);
+    const companySize = sanitizeInput(requestData.companySize, MAX_COMPANY_SIZE_LENGTH);
+    const location = sanitizeInput(requestData.location, MAX_LOCATION_LENGTH);
+    const freeTextNotes = sanitizeInput(requestData.freeTextNotes, MAX_FREE_TEXT_LENGTH);
+    const timeHorizonYears = Math.min(Math.max(Number(requestData.timeHorizonYears) || 3, MIN_TIME_HORIZON), MAX_TIME_HORIZON);
 
     console.log(`Researching AI solutions for: ${industry} - ${aiService} - ${companySize || 'any size'} - ${location || 'global'}`);
 
