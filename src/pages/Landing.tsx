@@ -1,7 +1,7 @@
 import { Navbar } from '@/components/layout/Navbar';
 import { HeroSection } from '@/components/landing/HeroSection';
 import { FeaturesSection } from '@/components/landing/FeaturesSection';
-import { QuickPreview } from '@/components/landing/QuickPreview';
+import { HowItWorksSection } from '@/components/landing/HowItWorksSection';
 import { PricingSection } from '@/components/landing/PricingSection';
 import { Footer } from '@/components/landing/Footer';
 
@@ -11,7 +11,7 @@ const Landing = () => {
       <Navbar />
       <HeroSection />
       <FeaturesSection />
-      <QuickPreview />
+      <HowItWorksSection />
       <PricingSection />
       <Footer />
     </div>
