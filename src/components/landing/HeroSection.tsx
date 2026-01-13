@@ -1,107 +1,168 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, BarChart3, TrendingUp, Shield } from 'lucide-react';
+import { ArrowRight, BarChart3, Sparkles, Shield, Play, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
+const trustLogos = [
+  { name: 'Fortune 500', label: 'Fortune 500 Companies' },
+  { name: 'Tech Startups', label: 'Tech Startups' },
+  { name: 'Consulting Firms', label: 'Consulting Firms' },
+  { name: 'Financial Services', label: 'Financial Services' },
+];
 
 export const HeroSection = () => {
-  const navigate = useNavigate();
-
   return (
     <section className="relative min-h-screen hero-gradient overflow-hidden">
       {/* Background grid pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(217_91%_60%/0.03)_1px,transparent_1px),linear-gradient(to_bottom,hsl(217_91%_60%/0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
       
-      {/* Gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/15 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
+      {/* Gradient orbs - more subtle */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/15 rounded-full blur-[120px]" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[100px]" />
 
-      <div className="container relative z-10 mx-auto px-6 pt-32 pb-20">
-        <div className="max-w-5xl mx-auto text-center">
-          {/* Badge */}
+      <div className="container relative z-10 mx-auto px-6 pt-28 pb-20">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left Column - Content */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary mb-8"
           >
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            <span className="text-sm font-medium">AI Investment Intelligence</span>
-          </motion.div>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-white mb-6">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span className="text-sm font-medium">AI-Powered Financial Analysis</span>
+            </div>
 
-          {/* Main heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-6 leading-tight"
-          >
-            Measure the{' '}
-            <span className="gradient-text">True Value</span>
-            <br />of Your AI Investment
-          </motion.h1>
+            {/* Main heading */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+              AI ROI Calculator That Thinks Like a{' '}
+              <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">CFO</span>
+            </h1>
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10"
-          >
-            Go beyond simple ROI. Calculate tangible returns, intangible benefits, and strategic value 
-            of your AI implementations with enterprise-grade analysis tools.
-          </motion.p>
+            {/* Subtitle */}
+            <p className="text-lg md:text-xl text-white/80 mb-4 leading-relaxed">
+              Model NPV, IRR, payback, and risk-adjusted returns for your AI projects—without touching a spreadsheet.
+            </p>
+            
+            {/* Supporting microcopy */}
+            <p className="text-sm text-white/60 mb-8">
+              Combine financial rigor with AI-powered market research to justify your next AI investment in minutes.
+            </p>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
-          >
-            <Button 
-              variant="hero" 
-              size="xl"
-              onClick={() => navigate('/calculator')}
-              className="w-full sm:w-auto"
-            >
-              Start Free Analysis
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button 
-              variant="heroOutline" 
-              size="xl"
-              onClick={() => navigate('/quick-calculator')}
-              className="w-full sm:w-auto"
-            >
-              Quick Calculator
-            </Button>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto"
-          >
-            {[
-              { icon: BarChart3, label: 'Comprehensive Analysis', value: '15+ Metrics' },
-              { icon: TrendingUp, label: 'Average ROI Calculated', value: '$2.4M+' },
-              { icon: Shield, label: 'Risk Assessment', value: 'Monte Carlo' },
-            ].map((stat, index) => (
-              <div
-                key={stat.label}
-                className="glass rounded-xl p-6 hover:bg-card/60 transition-all duration-300"
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+              <Button 
+                variant="secondary" 
+                size="xl"
+                asChild
+                className="bg-white text-slate-900 hover:bg-white/90 shadow-lg"
               >
-                <stat.icon className="w-8 h-8 text-primary mb-3 mx-auto" />
-                <div className="font-mono text-2xl font-bold text-primary-foreground mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+                <Link to="/ai-roi-calculator">
+                  Start Full ROI Analysis
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="xl"
+                asChild
+                className="border-2 border-white/30 text-white hover:bg-white/10"
+              >
+                <Link to="/ai-research">
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  Get AI-Powered Estimate
+                </Link>
+              </Button>
+            </div>
+
+            {/* CTA Clarifiers */}
+            <div className="flex flex-col sm:flex-row gap-4 text-xs text-white/50">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle className="w-3.5 h-3.5" />
+                Full Analysis: Detailed costs, benefits, risk modeling
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle className="w-3.5 h-3.5" />
+                AI Estimate: No numbers required
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Right Column - Visual */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="relative"
+          >
+            {/* Mock Dashboard Preview */}
+            <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-6 shadow-2xl">
+              <div className="absolute -top-3 -right-3 px-3 py-1 bg-accent rounded-full text-xs font-semibold text-accent-foreground">
+                Live Preview
               </div>
-            ))}
+              
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <p className="text-white/50 text-xs uppercase tracking-wide mb-1">AI Project Analysis</p>
+                  <p className="text-white font-semibold">Customer Support Automation</p>
+                </div>
+                <div className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-medium">
+                  Positive Outlook
+                </div>
+              </div>
+
+              {/* Metrics Grid */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-white/5 rounded-xl p-4">
+                  <p className="text-white/50 text-xs mb-1">ROI</p>
+                  <p className="font-mono text-2xl font-bold text-emerald-400">+127%</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-4">
+                  <p className="text-white/50 text-xs mb-1">NPV</p>
+                  <p className="font-mono text-2xl font-bold text-white">$847K</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-4">
+                  <p className="text-white/50 text-xs mb-1">Payback</p>
+                  <p className="font-mono text-2xl font-bold text-white">14 mo</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-4">
+                  <p className="text-white/50 text-xs mb-1">Risk-Adj ROI</p>
+                  <p className="font-mono text-2xl font-bold text-primary">+89%</p>
+                </div>
+              </div>
+
+              {/* Mini Chart Placeholder */}
+              <div className="bg-white/5 rounded-xl p-4 h-24 flex items-end gap-1">
+                {[40, 55, 45, 70, 85, 75, 90, 95].map((h, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 bg-gradient-to-t from-primary/50 to-primary rounded-t"
+                    style={{ height: `${h}%` }}
+                  />
+                ))}
+              </div>
+            </div>
           </motion.div>
         </div>
+
+        {/* Trust Strip */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-16 pt-8 border-t border-white/10"
+        >
+          <p className="text-center text-white/40 text-sm mb-6">Trusted by teams at</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+            {trustLogos.map((logo) => (
+              <div key={logo.name} className="text-white/30 text-sm font-medium">
+                {logo.label}
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
 
       {/* Bottom fade */}
