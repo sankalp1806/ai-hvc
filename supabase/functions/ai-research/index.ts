@@ -70,35 +70,26 @@ serve(async (req) => {
   }
 
   try {
-    // Authentication check
+    // Authentication check - optional but logged
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      console.error("Missing or invalid authorization header");
-      return new Response(
-        JSON.stringify({ error: 'Authentication required' }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    let userId = 'anonymous';
     
-    if (claimsError || !claimsData?.claims) {
-      console.error("JWT validation failed:", claimsError?.message || "No claims returned");
-      return new Response(
-        JSON.stringify({ error: 'Invalid or expired authentication token' }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    if (authHeader?.startsWith('Bearer ')) {
+      const supabase = createClient(
+        Deno.env.get('SUPABASE_URL')!,
+        Deno.env.get('SUPABASE_ANON_KEY')!,
+        { global: { headers: { Authorization: authHeader } } }
       );
-    }
 
-    const userId = claimsData.claims.sub;
-    console.log(`Authenticated request from user: ${userId}`);
+      const token = authHeader.replace('Bearer ', '');
+      const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+      
+      if (!claimsError && claimsData?.claims) {
+        userId = claimsData.claims.sub as string;
+      }
+    }
+    
+    console.log(`AI Research request from user: ${userId}`);
 
     // Parse and validate request body
     const requestData = await req.json() as ResearchRequest;
