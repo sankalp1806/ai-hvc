@@ -5,58 +5,59 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { DollarSign, ArrowLeft, ArrowRight, Plus, Trash2 } from 'lucide-react';
+import { DollarSign, ArrowLeft, ArrowRight, Plus, Trash2, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
+// Updated cost categories matching the CostEntry type
 const costCategories = {
-  direct: {
-    label: 'Direct Costs',
-    description: 'Core investment costs',
-    types: [
-      { value: 'software_licensing', label: 'AI Software Licensing' },
-      { value: 'hardware', label: 'Hardware & Infrastructure' },
-      { value: 'implementation', label: 'Implementation Services' },
-      { value: 'data_prep', label: 'Data Preparation' },
-      { value: 'custom_dev', label: 'Custom Development' },
-    ],
+  implementation: {
+    label: 'Implementation & Integration',
+    description: 'Professional services for deployment',
+    typicalRange: { min: 50000, max: 500000 },
   },
-  indirect: {
-    label: 'Indirect Costs',
-    description: 'Supporting investment costs',
-    types: [
-      { value: 'training', label: 'Employee Training' },
-      { value: 'change_mgmt', label: 'Change Management' },
-      { value: 'opportunity', label: 'Opportunity Cost' },
-    ],
+  infrastructure: {
+    label: 'Infrastructure & Hardware',
+    description: 'Cloud, compute, storage, networking',
+    typicalRange: { min: 20000, max: 200000 },
   },
-  hidden: {
-    label: 'Hidden Costs',
-    description: 'Often overlooked costs',
-    types: [
-      { value: 'integration', label: 'Integration Complexity' },
-      { value: 'data_quality', label: 'Data Quality Remediation' },
-      { value: 'security', label: 'Security & Compliance' },
-      { value: 'vendor_mgmt', label: 'Vendor Management' },
-      { value: 'tech_debt', label: 'Technical Debt' },
-    ],
+  licensing: {
+    label: 'Software Licensing',
+    description: 'AI platform licenses and subscriptions',
+    typicalRange: { min: 30000, max: 300000 },
   },
-  recurring: {
-    label: 'Recurring Costs',
-    description: 'Ongoing operational costs',
-    types: [
-      { value: 'maintenance', label: 'Maintenance & Support' },
-      { value: 'cloud', label: 'Cloud Hosting / Compute' },
-      { value: 'retraining', label: 'Model Retraining' },
-      { value: 'data_storage', label: 'Data Storage' },
-      { value: 'license_renewal', label: 'License Renewals' },
-    ],
+  personnel: {
+    label: 'Personnel & Staffing',
+    description: 'Internal team costs and hiring',
+    typicalRange: { min: 50000, max: 400000 },
+  },
+  training: {
+    label: 'Training & Enablement',
+    description: 'Staff training and change management',
+    typicalRange: { min: 10000, max: 100000 },
+  },
+  maintenance: {
+    label: 'Maintenance & Support',
+    description: 'Ongoing vendor support and updates',
+    typicalRange: { min: 15000, max: 100000 },
+  },
+  consulting: {
+    label: 'Consulting & Advisory',
+    description: 'External expertise and strategy',
+    typicalRange: { min: 25000, max: 200000 },
+  },
+  other: {
+    label: 'Other Costs',
+    description: 'Miscellaneous and contingency',
+    typicalRange: { min: 5000, max: 50000 },
   },
 };
+
+type CostCategory = keyof typeof costCategories;
 
 export const CostInputStep = () => {
   const { projectData, addCost, removeCost, setCurrentStep } = useCalculatorStore();
   const [newCost, setNewCost] = useState<Partial<CostEntry>>({
-    category: 'direct',
+    category: 'implementation',
     type: '',
     name: '',
     oneTimeCost: 0,
@@ -66,12 +67,12 @@ export const CostInputStep = () => {
   });
 
   const handleAddCost = () => {
-    if (!newCost.type || !newCost.name) return;
+    if (!newCost.name) return;
     
     const cost: CostEntry = {
       id: crypto.randomUUID(),
-      category: newCost.category as any,
-      type: newCost.type,
+      category: newCost.category as CostCategory,
+      type: newCost.type || newCost.category || 'other',
       name: newCost.name,
       oneTimeCost: newCost.oneTimeCost || 0,
       monthlyRecurring: newCost.monthlyRecurring || 0,
@@ -82,7 +83,7 @@ export const CostInputStep = () => {
     
     addCost(cost);
     setNewCost({
-      category: 'direct',
+      category: 'implementation',
       type: '',
       name: '',
       oneTimeCost: 0,
@@ -105,6 +106,8 @@ export const CostInputStep = () => {
     (sum, cost) => sum + cost.oneTimeCost + cost.annualRecurring * projectData.timeHorizonYears,
     0
   );
+
+  const selectedCategory = costCategories[newCost.category as CostCategory];
 
   return (
     <div className="space-y-8">
@@ -147,7 +150,15 @@ export const CostInputStep = () => {
             <Label className="text-sm font-medium mb-2 block">Category</Label>
             <Select
               value={newCost.category}
-              onValueChange={(value: any) => setNewCost({ ...newCost, category: value, type: '' })}
+              onValueChange={(value: CostCategory) => {
+                const cat = costCategories[value];
+                setNewCost({ 
+                  ...newCost, 
+                  category: value, 
+                  name: cat.label,
+                  type: value 
+                });
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select category" />
@@ -160,35 +171,43 @@ export const CostInputStep = () => {
                 ))}
               </SelectContent>
             </Select>
+            {selectedCategory && (
+              <p className="text-xs text-muted-foreground mt-1">
+                {selectedCategory.description}
+              </p>
+            )}
           </div>
           
           <div>
-            <Label className="text-sm font-medium mb-2 block">Type</Label>
-            <Select
-              value={newCost.type}
-              onValueChange={(value) => {
-                const typeLabel = costCategories[newCost.category as keyof typeof costCategories]?.types
-                  .find(t => t.value === value)?.label || '';
-                setNewCost({ ...newCost, type: value, name: typeLabel });
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                {costCategories[newCost.category as keyof typeof costCategories]?.types.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label className="text-sm font-medium mb-2 block">Name / Description</Label>
+            <Input
+              value={newCost.name || ''}
+              onChange={(e) => setNewCost({ ...newCost, name: e.target.value })}
+              placeholder="e.g., AI Platform License"
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
-            <Label className="text-sm font-medium mb-2 block">One-time Cost</Label>
+            <div className="flex items-center gap-2 mb-2">
+              <Label className="text-sm font-medium">One-time Cost</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-3 w-3 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">Upfront costs paid once at the start</p>
+                    {selectedCategory && (
+                      <p className="text-xs text-muted-foreground">
+                        Typical: {formatCurrency(selectedCategory.typicalRange.min)} - {formatCurrency(selectedCategory.typicalRange.max)}
+                      </p>
+                    )}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
               <Input
@@ -202,7 +221,19 @@ export const CostInputStep = () => {
           </div>
           
           <div>
-            <Label className="text-sm font-medium mb-2 block">Annual Recurring</Label>
+            <div className="flex items-center gap-2 mb-2">
+              <Label className="text-sm font-medium">Annual Recurring</Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info className="h-3 w-3 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">Costs that repeat each year</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
               <Input
@@ -224,10 +255,14 @@ export const CostInputStep = () => {
               max={100}
               step={5}
             />
+            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+              <span>Low</span>
+              <span>High</span>
+            </div>
           </div>
         </div>
 
-        <Button onClick={handleAddCost} disabled={!newCost.type}>
+        <Button onClick={handleAddCost} disabled={!newCost.name}>
           <Plus className="mr-2 h-4 w-4" />
           Add Cost
         </Button>
@@ -245,15 +280,19 @@ export const CostInputStep = () => {
               >
                 <div>
                   <div className="font-medium">{cost.name}</div>
-                  <div className="text-sm text-muted-foreground capitalize">{cost.category}</div>
+                  <div className="text-sm text-muted-foreground capitalize">
+                    {costCategories[cost.category as CostCategory]?.label || cost.category}
+                  </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
                     <div className="font-mono font-semibold">
-                      {formatCurrency(cost.oneTimeCost + cost.annualRecurring)}
+                      {formatCurrency(cost.oneTimeCost + cost.annualRecurring * projectData.timeHorizonYears)}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {cost.confidenceLevel}% confidence
+                      {cost.oneTimeCost > 0 && `${formatCurrency(cost.oneTimeCost)} one-time`}
+                      {cost.oneTimeCost > 0 && cost.annualRecurring > 0 && ' + '}
+                      {cost.annualRecurring > 0 && `${formatCurrency(cost.annualRecurring)}/yr`}
                     </div>
                   </div>
                   <Button
@@ -266,6 +305,44 @@ export const CostInputStep = () => {
                   </Button>
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Quick Add Templates */}
+      {projectData.costs.length === 0 && (
+        <div className="metric-card bg-muted/30">
+          <h4 className="text-sm font-medium mb-3">Quick Add Common Costs</h4>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { category: 'licensing' as const, name: 'AI Platform License', oneTime: 0, annual: 50000 },
+              { category: 'implementation' as const, name: 'Implementation Services', oneTime: 100000, annual: 0 },
+              { category: 'training' as const, name: 'Staff Training', oneTime: 25000, annual: 5000 },
+              { category: 'infrastructure' as const, name: 'Cloud Infrastructure', oneTime: 10000, annual: 36000 },
+              { category: 'maintenance' as const, name: 'Annual Maintenance', oneTime: 0, annual: 20000 },
+            ].map((template, idx) => (
+              <Button
+                key={idx}
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  addCost({
+                    id: crypto.randomUUID(),
+                    category: template.category,
+                    type: template.category,
+                    name: template.name,
+                    oneTimeCost: template.oneTime,
+                    monthlyRecurring: 0,
+                    annualRecurring: template.annual,
+                    yearsApplicable: [],
+                    confidenceLevel: 75,
+                  });
+                }}
+              >
+                <Plus className="mr-1 h-3 w-3" />
+                {template.name}
+              </Button>
             ))}
           </div>
         </div>
