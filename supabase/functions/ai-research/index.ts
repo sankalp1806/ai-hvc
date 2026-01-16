@@ -490,6 +490,7 @@ IMPORTANT:
 
     console.log("Calling AI gateway for comprehensive analysis...");
 
+    // Use a model with larger context and add max_tokens
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -497,12 +498,13 @@ IMPORTANT:
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-2.5-pro",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        temperature: 0.7,
+        temperature: 0.6,
+        max_tokens: 16000,
       }),
     });
 
@@ -540,10 +542,30 @@ IMPORTANT:
       );
     }
 
-    console.log("Raw AI response received, parsing...");
+    console.log("Raw AI response received, length:", content.length);
 
     let researchData;
     try {
+      let cleanContent = content.trim();
+      
+      // Remove markdown code blocks
+      if (cleanContent.startsWith("```json")) {
+        cleanContent = cleanContent.slice(7);
+      } else if (cleanContent.startsWith("```")) {
+        cleanContent = cleanContent.slice(3);
+      }
+      if (cleanContent.endsWith("```")) {
+        cleanContent = cleanContent.slice(0, -3);
+      }
+      cleanContent = cleanContent.trim();
+      
+      // Try to parse the JSON
+      researchData = JSON.parse(cleanContent);
+      console.log("Successfully parsed comprehensive research data");
+    } catch (parseError) {
+      console.error("Failed to parse AI response as JSON:", parseError);
+      
+      // Attempt to fix truncated JSON by completing it
       let cleanContent = content.trim();
       if (cleanContent.startsWith("```json")) {
         cleanContent = cleanContent.slice(7);
@@ -555,18 +577,38 @@ IMPORTANT:
       }
       cleanContent = cleanContent.trim();
       
-      researchData = JSON.parse(cleanContent);
-      console.log("Successfully parsed comprehensive research data");
-    } catch (parseError) {
-      console.error("Failed to parse AI response as JSON:", parseError);
-      console.error("Raw content:", content.substring(0, 500));
-      return new Response(
-        JSON.stringify({ 
-          error: "Failed to parse research results",
-          rawContent: content.substring(0, 1000)
-        }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      // Try to complete truncated JSON by finding last complete object
+      try {
+        // Count braces to find where JSON is complete
+        let braceCount = 0;
+        let lastValidIndex = 0;
+        
+        for (let i = 0; i < cleanContent.length; i++) {
+          if (cleanContent[i] === '{') braceCount++;
+          if (cleanContent[i] === '}') {
+            braceCount--;
+            if (braceCount === 0) {
+              lastValidIndex = i + 1;
+            }
+          }
+        }
+        
+        if (lastValidIndex > 0) {
+          const validJson = cleanContent.substring(0, lastValidIndex);
+          researchData = JSON.parse(validJson);
+          console.log("Recovered truncated JSON successfully");
+        } else {
+          throw new Error("Could not recover truncated JSON");
+        }
+      } catch (recoveryError) {
+        console.error("JSON recovery failed:", recoveryError);
+        return new Response(
+          JSON.stringify({ 
+            error: "Analysis generated but response was incomplete. Please try again.",
+          }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     return new Response(
