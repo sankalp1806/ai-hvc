@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Check, Sparkles } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
@@ -17,7 +17,7 @@ const plans = [
     ],
     cta: 'Start Free',
     href: '/ai-roi-calculator',
-    variant: 'outline' as const,
+    highlighted: false,
     clarifier: 'One analysis = one saved ROI scenario',
   },
   {
@@ -27,17 +27,15 @@ const plans = [
     description: 'For serious AI investors',
     features: [
       'Unlimited analyses',
-      'Full metrics (ROI, NPV, IRR, risk-adjusted)',
+      'Full metrics (ROI, NPV, IRR)',
       'AI-powered research reports',
-      'Monte Carlo simulation',
+      'Risk-adjusted scenarios',
       'PDF & Excel export',
-      'Scenario comparison',
       'Priority support',
     ],
     cta: 'Start Pro Trial',
     href: '/ai-roi-calculator',
-    variant: 'hero' as const,
-    popular: true,
+    highlighted: true,
     clarifier: 'No credit card required for trial',
   },
   {
@@ -51,13 +49,11 @@ const plans = [
       'Team collaboration & SSO',
       'Custom modeling templates',
       'API access & integrations',
-      'Custom benchmarks',
       'Dedicated success manager',
-      'SLA guarantees',
     ],
     cta: 'Contact Sales',
     href: 'mailto:sales@ai-roi-studio.com',
-    variant: 'outline' as const,
+    highlighted: false,
     clarifier: 'Volume discounts available',
   },
 ];
@@ -65,23 +61,23 @@ const plans = [
 export const PricingSection = () => {
   return (
     <section id="pricing" className="section-spacing bg-background">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-14"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground">
             Start free and scale as your AI initiatives grow
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.name}
@@ -89,25 +85,26 @@ export const PricingSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className={`metric-card relative flex flex-col ${
-                plan.popular ? 'border-primary shadow-lg md:scale-105 z-10' : ''
+              className={`relative flex flex-col rounded-xl border p-6 ${
+                plan.highlighted 
+                  ? 'bg-slate-50 border-primary shadow-lg' 
+                  : 'bg-card border-border'
               }`}
             >
-              {plan.popular && (
+              {plan.highlighted && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold bg-primary text-primary-foreground rounded-full shadow-sm">
-                    <Sparkles className="w-3 h-3" />
+                  <span className="inline-flex px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full border border-primary/20">
                     Most Popular
                   </span>
                 </div>
               )}
 
               <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-foreground mb-2">
+                <h3 className="text-lg font-semibold text-foreground mb-2">
                   {plan.name}
                 </h3>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="font-mono text-4xl font-bold text-foreground">
+                  <span className="font-mono text-3xl font-bold text-foreground">
                     {plan.price}
                   </span>
                   {plan.period && (
@@ -124,10 +121,10 @@ export const PricingSection = () => {
                 </p>
               </div>
 
-              <ul className="space-y-3 mb-8 flex-grow">
+              <ul className="space-y-3 mb-6 flex-grow">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2">
-                    <Check className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                     <span className="text-sm text-foreground">{feature}</span>
                   </li>
                 ))}
@@ -135,8 +132,8 @@ export const PricingSection = () => {
 
               <div className="mt-auto">
                 <Button
-                  variant={plan.variant}
-                  className="w-full"
+                  variant={plan.highlighted ? 'default' : 'outline'}
+                  className={`w-full ${plan.highlighted ? 'bg-primary hover:bg-primary/90' : ''}`}
                   asChild
                 >
                   <Link to={plan.href}>
@@ -152,6 +149,20 @@ export const PricingSection = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Early Access Note */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="mt-10 text-center"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-sm">
+            <span className="w-2 h-2 rounded-full bg-amber-500" />
+            Early access pricing — lock in these rates before general availability
+          </div>
+        </motion.div>
       </div>
     </section>
   );

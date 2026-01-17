@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CheckCircle2, 
@@ -28,7 +28,8 @@ import {
   RefreshCw,
   ArrowRight,
   Sparkles,
-  TrendingDown
+  TrendingDown,
+  Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -51,6 +52,9 @@ import {
   Line,
   ReferenceLine
 } from 'recharts';
+import { toast } from 'sonner';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface AnalysisReportViewProps {
   report: AnalysisReport;
@@ -87,6 +91,8 @@ export const AnalysisReportView = ({ report, onReset }: AnalysisReportViewProps)
   const [expandedProviders, setExpandedProviders] = useState<string[]>([]);
   const [expandedSections, setExpandedSections] = useState<string[]>(['metrics', 'comparative']);
   const [activeMetricTab, setActiveMetricTab] = useState('financial');
+  const [isExporting, setIsExporting] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   const toggleProvider = (name: string) => {
     setExpandedProviders(prev => 
@@ -98,6 +104,78 @@ export const AnalysisReportView = ({ report, onReset }: AnalysisReportViewProps)
     setExpandedSections(prev =>
       prev.includes(section) ? prev.filter(s => s !== section) : [...prev, section]
     );
+  };
+
+  const handleExportPDF = async () => {
+    if (!reportRef.current) return;
+    
+    setIsExporting(true);
+    toast.info('Generating PDF...');
+    
+    try {
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      
+      let heightLeft = imgHeight * ratio;
+      let position = 0;
+      
+      pdf.addImage(imgData, 'PNG', imgX, position, imgWidth * ratio, imgHeight * ratio);
+      heightLeft -= pdfHeight;
+      
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight * ratio;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', imgX, position, imgWidth * ratio, imgHeight * ratio);
+        heightLeft -= pdfHeight;
+      }
+      
+      const fileName = `AI-ROI-Analysis-${report.contextOverview?.scenarioSummary?.industry || 'Report'}-${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+      
+      toast.success('PDF exported successfully!');
+    } catch (error) {
+      console.error('PDF export error:', error);
+      toast.error('Failed to export PDF. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: 'AI ROI Analysis',
+      text: `AI ROI Analysis for ${report.contextOverview?.scenarioSummary?.industry} - ${report.contextOverview?.scenarioSummary?.serviceType}. ROI: ${report.executiveSummary?.roiRange?.conservative} - ${report.executiveSummary?.roiRange?.optimistic}`,
+      url: window.location.href
+    };
+    
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Share cancelled');
+      }
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard!');
+    }
   };
 
   const getRiskColor = (level: string) => {
@@ -257,15 +335,22 @@ export const AnalysisReportView = ({ report, onReset }: AnalysisReportViewProps)
                 </div>
                 <p className="text-sm text-slate-500">
                   {report.contextOverview?.scenarioSummary?.industry} • {report.contextOverview?.scenarioSummary?.serviceType}
+                  {report.contextOverview?.locationContext?.region && ` • ${report.contextOverview.locationContext.region}`}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="gap-2">
-                <Download className="w-4 h-4" />
-                <span className="hidden sm:inline">Export PDF</span>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="gap-2"
+                onClick={handleExportPDF}
+                disabled={isExporting}
+              >
+                {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                <span className="hidden sm:inline">{isExporting ? 'Exporting...' : 'Export PDF'}</span>
               </Button>
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2" onClick={handleShare}>
                 <Share2 className="w-4 h-4" />
                 <span className="hidden sm:inline">Share</span>
               </Button>
@@ -276,6 +361,9 @@ export const AnalysisReportView = ({ report, onReset }: AnalysisReportViewProps)
             </div>
           </div>
         </div>
+
+        {/* Report Content - wrapped for PDF export */}
+        <div ref={reportRef} className="space-y-6">
 
         {/* Hero Metrics Section - Level 1 Card */}
         <motion.div 
