@@ -1063,6 +1063,7 @@ export const AnalysisReportView = ({ report, onReset }: AnalysisReportViewProps)
             </div>
           </SectionCard>
         </div>
+        </div>
 
         {/* Bottom CTA */}
         <div className="bg-gradient-to-r from-primary to-cyan-500 rounded-xl p-6 text-white text-center">
