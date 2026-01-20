@@ -33,7 +33,12 @@ import { useNavigate } from 'react-router-dom';
 
 const COLORS = ['hsl(217, 91%, 60%)', 'hsl(160, 84%, 39%)', 'hsl(38, 92%, 50%)', 'hsl(0, 84%, 60%)'];
 
-export const ResultsStep = () => {
+interface ResultsStepProps {
+  isDemo?: boolean;
+  onExitDemo?: () => void;
+}
+
+export const ResultsStep = ({ isDemo = false, onExitDemo }: ResultsStepProps) => {
   const { results, projectData, setCurrentStep, resetCalculator } = useCalculatorStore();
   const navigate = useNavigate();
 
