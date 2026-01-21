@@ -4,6 +4,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { QuickSetupStep } from '@/components/calculator/QuickSetupStep';
 import { InvestmentDetailsStep } from '@/components/calculator/InvestmentDetailsStep';
 import { ResultsStep } from '@/components/calculator/ResultsStep';
+import { AutosaveIndicator } from '@/components/calculator/AutosaveIndicator';
 import { useCalculatorStore } from '@/store/calculatorStore';
 import { cn } from '@/lib/utils';
 import { Check, Play, Clock, Sparkles } from 'lucide-react';
@@ -182,11 +183,13 @@ const Calculator = () => {
               })}
             </div>
             
-            {/* Estimated time */}
-            <div className="text-center mt-4">
+            {/* Estimated time & Autosave */}
+            <div className="flex items-center justify-center gap-4 mt-4">
               <span className="text-xs text-muted-foreground">
                 Estimated time: ~5 minutes
               </span>
+              <span className="text-muted-foreground">•</span>
+              <AutosaveIndicator />
             </div>
           </div>
 
