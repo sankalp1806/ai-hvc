@@ -1,5 +1,6 @@
 import { BarChart3, Lock, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PageContainer, Grid } from '@/components/layout/LayoutPrimitives';
 
 const productLinks = [
   { href: '/ai-roi-calculator', label: 'Calculator' },
@@ -24,44 +25,44 @@ const resourceLinks = [
 
 export const Footer = () => {
   return (
-    <footer className="bg-slate-900 text-slate-300 py-16">
-      <div className="container mx-auto px-6 max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+    <footer className="bg-slate-950 text-slate-300 py-16 border-t border-slate-800">
+      <PageContainer>
+        <Grid cols={1} className="md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
           {/* Brand */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                 <BarChart3 className="w-5 h-5 text-white" />
               </div>
-              <span className="font-semibold text-lg text-white">AI ROI Studio</span>
+              <span className="font-bold text-xl text-white tracking-tight">AI ROI Studio</span>
             </div>
-            <p className="text-slate-400 max-w-sm mb-5 text-sm leading-relaxed">
-              Financial-grade AI investment analysis. Calculate ROI, NPV, and risk-adjusted 
+            <p className="text-slate-400 max-w-sm text-sm leading-relaxed">
+              Financial-grade AI investment analysis. Calculate ROI, NPV, and risk-adjusted
               returns to make confident AI decisions.
             </p>
-            
+
             {/* Security statements */}
-            <div className="space-y-2 text-xs text-slate-500">
-              <div className="flex items-center gap-2">
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center gap-2.5 text-xs text-slate-500 font-medium">
                 <Lock className="w-3.5 h-3.5" />
-                All data encrypted in transit (HTTPS)
+                <span>All data encrypted in transit (HTTPS)</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5 text-xs text-slate-500 font-medium">
                 <Shield className="w-3.5 h-3.5" />
-                We don't sell or share your financial data
+                <span>We don't sell or share your financial data</span>
               </div>
             </div>
           </div>
 
           {/* Product */}
-          <div>
-            <h4 className="font-medium text-white mb-4 text-sm">Product</h4>
-            <ul className="space-y-2.5">
+          <div className="space-y-4">
+            <h4 className="font-bold text-white text-sm tracking-wide">Product</h4>
+            <ul className="space-y-3">
               {productLinks.map((link) => (
                 <li key={link.label}>
-                  <Link 
-                    to={link.href} 
-                    className="text-slate-400 hover:text-white transition-colors text-sm"
+                  <Link
+                    to={link.href}
+                    className="text-slate-400 hover:text-white transition-colors text-sm block"
                   >
                     {link.label}
                   </Link>
@@ -71,14 +72,14 @@ export const Footer = () => {
           </div>
 
           {/* Resources */}
-          <div>
-            <h4 className="font-medium text-white mb-4 text-sm">Resources</h4>
-            <ul className="space-y-2.5">
+          <div className="space-y-4">
+            <h4 className="font-bold text-white text-sm tracking-wide">Resources</h4>
+            <ul className="space-y-3">
               {resourceLinks.map((link) => (
                 <li key={link.label}>
-                  <Link 
-                    to={link.href} 
-                    className="text-slate-400 hover:text-white transition-colors text-sm"
+                  <Link
+                    to={link.href}
+                    className="text-slate-400 hover:text-white transition-colors text-sm block"
                   >
                     {link.label}
                   </Link>
@@ -88,14 +89,14 @@ export const Footer = () => {
           </div>
 
           {/* Company */}
-          <div>
-            <h4 className="font-medium text-white mb-4 text-sm">Company</h4>
-            <ul className="space-y-2.5">
+          <div className="space-y-4">
+            <h4 className="font-bold text-white text-sm tracking-wide">Company</h4>
+            <ul className="space-y-3">
               {companyLinks.map((link) => (
                 <li key={link.label}>
-                  <Link 
-                    to={link.href} 
-                    className="text-slate-400 hover:text-white transition-colors text-sm"
+                  <Link
+                    to={link.href}
+                    className="text-slate-400 hover:text-white transition-colors text-sm block"
                   >
                     {link.label}
                   </Link>
@@ -103,29 +104,29 @@ export const Footer = () => {
               ))}
             </ul>
           </div>
-        </div>
+        </Grid>
 
-        <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-slate-500">
+        <div className="border-t border-slate-900 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-xs text-slate-500 font-medium">
             © {new Date().getFullYear()} AI ROI Studio. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-1 rounded text-[10px] uppercase tracking-wide bg-slate-800 text-slate-400">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-900 text-slate-500 border border-slate-800">
               Early Access
             </span>
           </div>
         </div>
 
         {/* Disclaimer */}
-        <div className="mt-8 pt-6 border-t border-slate-800">
-          <p className="text-xs text-slate-600 text-center max-w-2xl mx-auto leading-relaxed">
-            AI ROI Studio provides illustrative estimates to support internal planning. 
-            Results depend entirely on your inputs and assumptions and should not be treated 
-            as financial advice or guarantees. Consult qualified professionals before making 
+        <div className="mt-8">
+          <p className="text-[10px] text-slate-600 text-center max-w-3xl mx-auto leading-relaxed">
+            AI ROI Studio provides illustrative estimates to support internal planning.
+            Results depend entirely on your inputs and assumptions and should not be treated
+            as financial advice or guarantees. Consult qualified professionals before making
             investment decisions.
           </p>
         </div>
-      </div>
+      </PageContainer>
     </footer>
   );
 };

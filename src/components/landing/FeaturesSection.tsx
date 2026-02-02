@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
-import { 
-  Calculator, 
-  Brain, 
-  ShieldCheck, 
+import {
+  Calculator,
+  Brain,
+  ShieldCheck,
   FileText,
   Target,
   Users
 } from 'lucide-react';
+import { PageContainer, Section, Grid, Stack } from '@/components/layout/LayoutPrimitives';
 
 const topFeatures = [
   {
@@ -49,8 +50,8 @@ const secondaryFeatures = [
 
 export const FeaturesSection = () => {
   return (
-    <section id="features" className="section-spacing bg-background">
-      <div className="container mx-auto px-6 max-w-6xl">
+    <Section id="features" spacing="default" className="bg-background">
+      <PageContainer>
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -62,13 +63,13 @@ export const FeaturesSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Why This Beats a Spreadsheet
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Structured financial analysis without the complexity
           </p>
         </motion.div>
 
         {/* Top 3 Features */}
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
+        <Grid cols={3} gap="lg" className="mb-16">
           {topFeatures.map((feature, index) => (
             <motion.div
               key={feature.title}
@@ -76,30 +77,30 @@ export const FeaturesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="card-level-2 p-6 card-hover"
+              className="bg-card border border-border rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow group"
             >
-              <div className="icon-container w-10 h-10 mb-4">
-                <feature.icon className="w-5 h-5 text-primary" />
+              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                <feature.icon className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">
+              <h3 className="text-xl font-semibold text-foreground mb-3">
                 {feature.title}
               </h3>
-              <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+              <p className="text-base text-muted-foreground mb-6 leading-relaxed">
                 {feature.description}
               </p>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {feature.tags.map((tag) => (
-                  <span key={tag} className="tag">
+                  <span key={tag} className="px-2.5 py-1 rounded-full text-xs font-medium bg-secondary/10 text-secondary-foreground border border-secondary/20">
                     {tag}
                   </span>
                 ))}
               </div>
             </motion.div>
           ))}
-        </div>
+        </Grid>
 
         {/* Secondary Features */}
-        <div className="grid md:grid-cols-3 gap-4">
+        <Grid cols={3} gap="md">
           {secondaryFeatures.map((feature, index) => (
             <motion.div
               key={feature.title}
@@ -107,23 +108,23 @@ export const FeaturesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
               viewport={{ once: true }}
-              className="card-level-3 p-4 flex items-start gap-3"
+              className="bg-muted/30 border border-transparent hover:border-border rounded-lg p-5 flex items-start gap-4 transition-colors"
             >
-              <div className="icon-container w-9 h-9 shrink-0">
-                <feature.icon className="w-4 h-4 text-primary" />
+              <div className="p-2 bg-background rounded-md shadow-sm shrink-0">
+                <feature.icon className="w-5 h-5 text-muted-foreground" />
               </div>
               <div>
-                <h3 className="font-medium text-foreground text-sm mb-0.5">
+                <h3 className="font-semibold text-foreground text-sm mb-1">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground text-xs">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   {feature.description}
                 </p>
               </div>
             </motion.div>
           ))}
-        </div>
-      </div>
-    </section>
+        </Grid>
+      </PageContainer>
+    </Section>
   );
 };

@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { Check, Play, Clock, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSearchParams } from 'react-router-dom';
+import { PageContainer } from '@/components/layout/LayoutPrimitives';
 
 const steps = [
   { id: 0, title: 'Quick Setup', description: 'Organization & AI solution', icon: Sparkles },
@@ -84,9 +85,9 @@ const Calculator = () => {
         return <QuickSetupStep onContinue={() => handleStepNavigation(1)} />;
       case 1:
         return (
-          <InvestmentDetailsStep 
-            onBack={() => setCurrentStep(0)} 
-            onContinue={() => handleStepNavigation(2)} 
+          <InvestmentDetailsStep
+            onBack={() => setCurrentStep(0)}
+            onContinue={() => handleStepNavigation(2)}
           />
         );
       case 2:
@@ -102,9 +103,9 @@ const Calculator = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <div className="pt-20 pb-12">
-        <div className="container mx-auto px-6">
+        <PageContainer>
           {/* Demo Banner */}
           {isDemo && (
             <div className="mb-6 p-4 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-between">
@@ -143,8 +144,8 @@ const Calculator = () => {
                           index < mappedStep
                             ? "bg-success text-success-foreground"
                             : index === mappedStep
-                            ? "bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/20"
-                            : "bg-muted text-muted-foreground"
+                              ? "bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/20"
+                              : "bg-muted text-muted-foreground"
                         )}
                       >
                         {index < mappedStep ? (
@@ -182,7 +183,7 @@ const Calculator = () => {
                 );
               })}
             </div>
-            
+
             {/* Estimated time & Autosave */}
             <div className="flex items-center justify-center gap-4 mt-4">
               <span className="text-xs text-muted-foreground">
@@ -206,7 +207,7 @@ const Calculator = () => {
               {renderStep()}
             </motion.div>
           </AnimatePresence>
-        </div>
+        </PageContainer>
       </div>
     </div>
   );

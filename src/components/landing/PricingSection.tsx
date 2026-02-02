@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { Section, PageContainer, Grid } from '@/components/layout/LayoutPrimitives';
 
 const plans = [
   {
@@ -60,24 +61,24 @@ const plans = [
 
 export const PricingSection = () => {
   return (
-    <section id="pricing" className="section-spacing bg-background">
-      <div className="container mx-auto px-6 max-w-5xl">
+    <Section id="pricing" className="bg-background">
+      <PageContainer>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           viewport={{ once: true }}
-          className="text-center mb-14"
+          className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Start free and scale as your AI initiatives grow
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <Grid cols={3} gap="lg">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.name}
@@ -85,47 +86,46 @@ export const PricingSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className={`relative flex flex-col rounded-xl border p-6 ${
-                plan.highlighted 
-                  ? 'bg-slate-50 border-primary shadow-lg' 
-                  : 'bg-card border-border'
-              }`}
+              className={`relative flex flex-col rounded-xl p-8 transition-all duration-300 ${plan.highlighted
+                  ? 'bg-card border-2 border-primary shadow-xl scale-105 z-10'
+                  : 'bg-background border border-border shadow-sm hover:shadow-md'
+                }`}
             >
               {plan.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full border border-primary/20">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <span className="inline-flex px-4 py-1 text-xs font-bold uppercase tracking-wide bg-primary text-primary-foreground rounded-full shadow-lg">
                     Most Popular
                   </span>
                 </div>
               )}
 
-              <div className="text-center mb-6">
+              <div className="text-center mb-8">
                 <h3 className="text-lg font-semibold text-foreground mb-2">
                   {plan.name}
                 </h3>
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="font-mono text-3xl font-bold text-foreground">
+                <div className="flex items-center justify-center gap-1 mb-2">
+                  <span className="font-bold text-4xl text-foreground tracking-tight">
                     {plan.price}
                   </span>
                   {plan.period && (
-                    <span className="text-muted-foreground text-sm">
+                    <span className="text-muted-foreground text-sm self-end mb-1">
                       {plan.period}
                     </span>
                   )}
                 </div>
                 {plan.priceSubtext && (
-                  <p className="text-xs text-muted-foreground mt-1">{plan.priceSubtext}</p>
+                  <p className="text-xs text-muted-foreground mb-1">{plan.priceSubtext}</p>
                 )}
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-sm text-muted-foreground">
                   {plan.description}
                 </p>
               </div>
 
-              <ul className="space-y-3 mb-6 flex-grow">
+              <ul className="space-y-4 mb-8 flex-grow">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="text-sm text-foreground">{feature}</span>
+                  <li key={feature} className="flex items-start gap-3 text-sm">
+                    <Check className={`w-5 h-5 shrink-0 ${plan.highlighted ? 'text-primary' : 'text-primary/70'}`} />
+                    <span className="text-foreground/90 leading-snug">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -133,7 +133,8 @@ export const PricingSection = () => {
               <div className="mt-auto">
                 <Button
                   variant={plan.highlighted ? 'default' : 'outline'}
-                  className={`w-full ${plan.highlighted ? 'bg-primary hover:bg-primary/90' : ''}`}
+                  size="lg"
+                  className={`w-full font-semibold ${plan.highlighted ? 'shadow-lg shadow-primary/20' : ''}`}
                   asChild
                 >
                   <Link to={plan.href}>
@@ -141,14 +142,14 @@ export const PricingSection = () => {
                   </Link>
                 </Button>
                 {plan.clarifier && (
-                  <p className="text-xs text-muted-foreground text-center mt-2">
+                  <p className="text-xs text-muted-foreground text-center mt-3">
                     {plan.clarifier}
                   </p>
                 )}
               </div>
             </motion.div>
           ))}
-        </div>
+        </Grid>
 
         {/* Early Access Note */}
         <motion.div
@@ -156,14 +157,14 @@ export const PricingSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
           viewport={{ once: true }}
-          className="mt-10 text-center"
+          className="mt-16 text-center"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-sm">
-            <span className="w-2 h-2 rounded-full bg-amber-500" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-sm font-medium">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
             Early access pricing — lock in these rates before general availability
           </div>
         </motion.div>
-      </div>
-    </section>
+      </PageContainer>
+    </Section>
   );
 };

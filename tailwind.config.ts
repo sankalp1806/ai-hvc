@@ -51,6 +51,10 @@ export default {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -78,6 +82,9 @@ export default {
       boxShadow: {
         'glow': 'var(--shadow-glow)',
         'glow-accent': 'var(--shadow-glow-accent)',
+        'soft': '0 2px 10px rgba(0, 0, 0, 0.05)',
+        'medium': '0 4px 20px rgba(0, 0, 0, 0.08)',
+        'hard': '0 8px 30px rgba(0, 0, 0, 0.12)',
       },
       keyframes: {
         "accordion-down": {

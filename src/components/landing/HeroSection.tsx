@@ -1,175 +1,95 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Check, Lock, FileText, Calculator } from 'lucide-react';
+import { Check, Lock, FileText, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-
-// Mini Calculator Component for Hero
-const MiniCalculator = () => {
-  const [cost, setCost] = useState(100000);
-  const [savings, setSavings] = useState(25);
-  
-  const annualSavings = cost * (savings / 100);
-  const roi = ((annualSavings * 3 - cost) / cost) * 100;
-  const paybackMonths = Math.round((cost / annualSavings) * 12);
-  
-  return (
-    <div className="bg-slate-900 border border-slate-700/50 rounded-xl p-5 shadow-xl">
-      <div className="flex items-center gap-2 mb-4">
-        <Calculator className="w-4 h-4 text-primary" />
-        <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Quick Estimate</span>
-      </div>
-      
-      <div className="space-y-5">
-        <div>
-          <label className="text-xs text-slate-400 mb-2 block">Annual AI Investment</label>
-          <div className="flex items-center gap-3">
-            <input
-              type="range"
-              min={25000}
-              max={500000}
-              step={5000}
-              value={cost}
-              onChange={(e) => setCost(Number(e.target.value))}
-              className="flex-1 h-1.5 rounded-full bg-slate-700 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
-            />
-            <span className="font-mono text-sm text-white w-24 text-right">
-              ${(cost / 1000).toFixed(0)}k
-            </span>
-          </div>
-        </div>
-        
-        <div>
-          <label className="text-xs text-slate-400 mb-2 block">Expected Efficiency Gain</label>
-          <div className="flex items-center gap-3">
-            <input
-              type="range"
-              min={10}
-              max={50}
-              step={5}
-              value={savings}
-              onChange={(e) => setSavings(Number(e.target.value))}
-              className="flex-1 h-1.5 rounded-full bg-slate-700 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
-            />
-            <span className="font-mono text-sm text-white w-24 text-right">
-              {savings}%
-            </span>
-          </div>
-        </div>
-      </div>
-      
-      <div className="mt-6 pt-5 border-t border-slate-700/50">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wide mb-1">3-Year ROI</p>
-            <p className="font-mono text-2xl font-bold text-emerald-400">
-              {roi.toFixed(0)}%
-            </p>
-          </div>
-          <div>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wide mb-1">Payback</p>
-            <p className="font-mono text-2xl font-bold text-white">
-              {paybackMonths} mo
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <Button 
-        variant="default" 
-        size="sm" 
-        asChild 
-        className="w-full mt-4 bg-primary hover:bg-primary/90"
-      >
-        <Link to="/ai-roi-calculator">
-          Get Full Analysis <ArrowRight className="ml-2 w-4 h-4" />
-        </Link>
-      </Button>
-    </div>
-  );
-};
+import { PageContainer, Section } from '@/components/layout/LayoutPrimitives';
+import { SupaCalculator } from './SupaCalculator';
 
 export const HeroSection = () => {
-  return (
-    <section className="relative min-h-[90vh] flex items-center hero-dark pt-20 pb-16">
-      <div className="container mx-auto px-6 max-w-6xl">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          
-          {/* Left: Copy */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-left"
-          >
-            {/* Eyebrow */}
-            <div className="eyebrow mb-6">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Early Access · AI ROI Modeling
-            </div>
-            
-            {/* Headline */}
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-[1.1]">
-              Model AI project ROI in minutes,{' '}
-              <span className="text-primary">not spreadsheets</span>
-            </h1>
-            
-            {/* Subheadline */}
-            <p className="text-lg text-slate-300 mb-8 leading-relaxed max-w-lg">
-              Generate ROI, NPV, and risk-adjusted scenarios for AI investments using a structured financial model—without building complex spreadsheets.
-            </p>
-            
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
-              <Button 
-                size="lg" 
-                asChild 
-                className="bg-primary hover:bg-primary/90 text-white font-medium h-12 px-6"
-              >
-                <Link to="/ai-roi-calculator">
-                  Start Free Analysis
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                asChild 
-                className="border-slate-600 text-slate-200 hover:bg-slate-800 hover:text-white h-12 px-6"
-              >
-                <Link to="/ai-research">
-                  View Sample Report
-                </Link>
-              </Button>
-            </div>
-            
-            {/* Reassurance row */}
-            <div className="flex flex-wrap gap-4 text-xs text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-slate-500" />
-                No credit card required
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 text-slate-500" />
-                Illustrative estimates only
-              </span>
-              <span className="flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-slate-500" />
-                Exports to PDF & Excel
-              </span>
-            </div>
-          </motion.div>
-          
-          {/* Right: Mini Calculator */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <MiniCalculator />
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
+    return (
+        <Section className="bg-background pt-32 pb-20 overflow-hidden relative">
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 blur-3xl rounded-bl-[100px] -z-10" />
+            <div className="absolute bottom-0 left-0 w-1/4 h-1/2 bg-secondary/5 blur-3xl rounded-tr-[100px] -z-10" />
+
+            <PageContainer>
+                <div className="flex flex-col items-center gap-16 relative z-10">
+
+                    {/* Top: Text Content (Centered) */}
+                    <div className="text-center max-w-4xl mx-auto space-y-8">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="space-y-8"
+                        >
+                            {/* Eyebrow */}
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold tracking-wide mx-auto">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                                </span>
+                                Early Access · AI ROI Modeling
+                            </div>
+
+                            {/* Headline */}
+                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] tracking-tight">
+                                Model AI value in <br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                                    minutes, not months
+                                </span>
+                            </h1>
+
+                            {/* Subheadline */}
+                            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+                                Stop guessing. Generate precise ROI, NPV, and risk-adjusted scenarios for your AI investments using our standardized financial engine.
+                            </p>
+
+                            {/* CTAs - Only Start Estimating button */}
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                                <Button
+                                    size="lg"
+                                    asChild
+                                    className="h-14 px-8 text-lg shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all font-semibold rounded-full min-w-[200px]"
+                                >
+                                    <Link to="/ai-roi-calculator">
+                                        Start Estimating
+                                        <ArrowRight className="ml-2 w-5 h-5" />
+                                    </Link>
+                                </Button>
+                            </div>
+
+                            {/* Reassurance row */}
+                            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground font-medium pt-2">
+                                <span className="flex items-center gap-2">
+                                    <Check className="w-4 h-4 text-primary" />
+                                    No login required
+                                </span>
+                                <span className="flex items-center gap-2">
+                                    <Lock className="w-4 h-4 text-primary" />
+                                    Private & Secure
+                                </span>
+                                <span className="flex items-center gap-2">
+                                    <FileText className="w-4 h-4 text-primary" />
+                                    Export PDF
+                                </span>
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* Bottom: Supa Calculator (Full Width) */}
+                    <div className="w-full max-w-6xl mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, y: 40 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                        >
+                            <SupaCalculator />
+                        </motion.div>
+                    </div>
+
+                </div>
+            </PageContainer>
+        </Section>
+    );
 };
