@@ -13,7 +13,7 @@ const companyLinks = [
   { href: '/about', label: 'About' },
   { href: '/privacy', label: 'Privacy Policy' },
   { href: '/terms', label: 'Terms of Service' },
-  { href: 'mailto:support@ai-roi-studio.com', label: 'Contact' },
+  { href: 'mailto:support@roic.app', label: 'Contact' },
 ];
 
 const resourceLinks = [
@@ -31,10 +31,10 @@ export const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                <BarChart3 className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-primary/20">
+                <img src="/logo.png" alt="ROIC Logo" className="w-full h-full object-cover" />
               </div>
-              <span className="font-bold text-xl text-white tracking-tight">AI ROI Studio</span>
+              <span className="font-bold text-xl text-white tracking-tight">ROIC</span>
             </div>
             <p className="text-slate-400 max-w-sm text-sm leading-relaxed">
               Financial-grade AI investment analysis. Calculate ROI, NPV, and risk-adjusted
@@ -108,7 +108,7 @@ export const Footer = () => {
 
         <div className="border-t border-slate-900 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-xs text-slate-500 font-medium">
-            © {new Date().getFullYear()} AI ROI Studio. All rights reserved.
+            © {new Date().getFullYear()} ROIC. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-900 text-slate-500 border border-slate-800">
@@ -120,7 +120,7 @@ export const Footer = () => {
         {/* Disclaimer */}
         <div className="mt-8">
           <p className="text-[10px] text-slate-600 text-center max-w-3xl mx-auto leading-relaxed">
-            AI ROI Studio provides illustrative estimates to support internal planning.
+            ROIC provides illustrative estimates to support internal planning.
             Results depend entirely on your inputs and assumptions and should not be treated
             as financial advice or guarantees. Consult qualified professionals before making
             investment decisions.

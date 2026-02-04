@@ -6,7 +6,7 @@ const Terms = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-center mb-12">
@@ -28,8 +28,8 @@ const Terms = () => {
                 <div>
                   <h2 className="text-xl font-semibold mb-2">Important Disclaimer</h2>
                   <p className="text-muted-foreground">
-                    AI ROI Studio provides estimates and projections for informational purposes only. 
-                    Results should not be considered financial advice. Always consult with qualified 
+                    ROIC provides estimates and projections for informational purposes only.
+                    Results should not be considered financial advice. Always consult with qualified
                     professionals before making investment decisions.
                   </p>
                 </div>
@@ -39,7 +39,7 @@ const Terms = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-foreground mb-4">1. Acceptance of Terms</h2>
               <p className="text-muted-foreground">
-                By accessing or using AI ROI Studio, you agree to be bound by these Terms of Service. 
+                By accessing or using ROIC, you agree to be bound by these Terms of Service.
                 If you do not agree to these terms, please do not use our services.
               </p>
             </section>
@@ -47,7 +47,7 @@ const Terms = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-foreground mb-4">2. Description of Service</h2>
               <p className="text-muted-foreground mb-4">
-                AI ROI Studio provides tools for calculating and analyzing the return on investment 
+                ROIC provides tools for calculating and analyzing the return on investment
                 for AI projects, including:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
@@ -72,9 +72,9 @@ const Terms = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-foreground mb-4">4. Limitation of Liability</h2>
               <p className="text-muted-foreground">
-                AI ROI Studio and its creators shall not be liable for any direct, indirect, incidental, 
-                consequential, or punitive damages arising from your use of the service or reliance on 
-                any projections or estimates provided. Financial projections are estimates only and 
+                ROIC and its creators shall not be liable for any direct, indirect, incidental,
+                consequential, or punitive damages arising from your use of the service or reliance on
+                any projections or estimates provided. Financial projections are estimates only and
                 actual results may vary significantly.
               </p>
             </section>
@@ -82,7 +82,7 @@ const Terms = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-foreground mb-4">5. Intellectual Property</h2>
               <p className="text-muted-foreground">
-                All content, features, and functionality of AI ROI Studio are owned by us and are 
+                All content, features, and functionality of ROIC are owned by us and are
                 protected by international copyright, trademark, and other intellectual property laws.
               </p>
             </section>
@@ -90,7 +90,7 @@ const Terms = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-foreground mb-4">6. Changes to Terms</h2>
               <p className="text-muted-foreground">
-                We reserve the right to modify these terms at any time. We will notify users of 
+                We reserve the right to modify these terms at any time. We will notify users of
                 material changes via email or through the service.
               </p>
             </section>
@@ -99,8 +99,8 @@ const Terms = () => {
               <h2 className="text-2xl font-semibold text-foreground mb-4">7. Contact</h2>
               <p className="text-muted-foreground">
                 Questions about these Terms should be sent to{' '}
-                <a href="mailto:legal@ai-roi-studio.com" className="text-primary hover:underline">
-                  legal@ai-roi-studio.com
+                <a href="mailto:legal@roic.app" className="text-primary hover:underline">
+                  legal@roic.app
                 </a>
               </p>
             </section>

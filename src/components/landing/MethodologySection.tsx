@@ -183,7 +183,7 @@ export const MethodologySection = () => {
 
                 <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
                   <p className="text-amber-800 text-xs text-center">
-                    <strong>Disclaimer:</strong> AI ROI Studio provides illustrative estimates only.
+                    <strong>Disclaimer:</strong> ROIC provides illustrative estimates only.
                     Actual results will vary.
                   </p>
                 </div>

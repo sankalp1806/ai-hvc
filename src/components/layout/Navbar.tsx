@@ -38,13 +38,13 @@ export const Navbar = () => {
         <PageContainer className="flex items-center justify-between h-16 md:h-20 transition-all duration-300">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-300">
-              <BarChart3 className="w-6 h-6 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-lg overflow-hidden shadow-lg group-hover:shadow-glow transition-all duration-300">
+              <img src="/logo.png" alt="ROIC Logo" className="w-full h-full object-cover" />
             </div>
             <span className={cn(
               "font-bold text-lg tracking-tight transition-colors text-foreground"
             )}>
-              AI ROI Studio
+              ROIC
             </span>
           </Link>
 

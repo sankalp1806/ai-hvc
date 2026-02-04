@@ -53,7 +53,7 @@ const plans = [
       'Dedicated success manager',
     ],
     cta: 'Contact Sales',
-    href: 'mailto:sales@ai-roi-studio.com',
+    href: 'mailto:sales@roic.app',
     highlighted: false,
     clarifier: 'Volume discounts available',
   },
@@ -87,8 +87,8 @@ export const PricingSection = () => {
               transition={{ duration: 0.4, delay: index * 0.1 }}
               viewport={{ once: true }}
               className={`relative flex flex-col rounded-xl p-8 transition-all duration-300 ${plan.highlighted
-                  ? 'bg-card border-2 border-primary shadow-xl scale-105 z-10'
-                  : 'bg-background border border-border shadow-sm hover:shadow-md'
+                ? 'bg-card border-2 border-primary shadow-xl scale-105 z-10'
+                : 'bg-background border border-border shadow-sm hover:shadow-md'
                 }`}
             >
               {plan.highlighted && (

@@ -6,7 +6,7 @@ const Privacy = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6 max-w-4xl">
           <div className="text-center mb-12">
@@ -28,7 +28,7 @@ const Privacy = () => {
                 <div>
                   <h2 className="text-xl font-semibold mb-2">Your Data is Safe</h2>
                   <p className="text-muted-foreground">
-                    We encrypt all data in transit using HTTPS. We never sell or share your input data 
+                    We encrypt all data in transit using HTTPS. We never sell or share your input data
                     with third parties. You can delete your analyses at any time.
                   </p>
                 </div>
@@ -38,7 +38,7 @@ const Privacy = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-foreground mb-4">1. Information We Collect</h2>
               <p className="text-muted-foreground mb-4">
-                We collect information you provide directly to us when using AI ROI Studio:
+                We collect information you provide directly to us when using ROIC:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                 <li>Account information (email, name) when you sign up</li>
@@ -61,7 +61,7 @@ const Privacy = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-foreground mb-4">3. Data Retention</h2>
               <p className="text-muted-foreground">
-                We retain your analysis data for as long as your account is active. You may request 
+                We retain your analysis data for as long as your account is active. You may request
                 deletion of your data at any time by contacting us or through your account settings.
               </p>
             </section>
@@ -69,8 +69,8 @@ const Privacy = () => {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-foreground mb-4">4. Third-Party Services</h2>
               <p className="text-muted-foreground">
-                We use trusted third-party services for hosting, analytics, and AI processing. 
-                These providers are bound by strict data protection agreements and only process 
+                We use trusted third-party services for hosting, analytics, and AI processing.
+                These providers are bound by strict data protection agreements and only process
                 data as necessary to provide their services.
               </p>
             </section>
@@ -79,8 +79,8 @@ const Privacy = () => {
               <h2 className="text-2xl font-semibold text-foreground mb-4">5. Contact Us</h2>
               <p className="text-muted-foreground">
                 If you have questions about this Privacy Policy, please contact us at{' '}
-                <a href="mailto:privacy@ai-roi-studio.com" className="text-primary hover:underline">
-                  privacy@ai-roi-studio.com
+                <a href="mailto:privacy@roic.app" className="text-primary hover:underline">
+                  privacy@roic.app
                 </a>
               </p>
             </section>

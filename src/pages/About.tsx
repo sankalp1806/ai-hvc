@@ -8,7 +8,7 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-6">
           {/* Hero */}
@@ -18,7 +18,7 @@ const About = () => {
               <span className="gradient-text"> Measurable</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              We built AI ROI Studio because we believe every AI investment decision should be 
+              We built ROIC because we believe every AI investment decision should be
               backed by rigorous financial analysis—not just gut feelings or vendor promises.
             </p>
           </div>
@@ -31,7 +31,7 @@ const About = () => {
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">Our Mission</h3>
               <p className="text-muted-foreground text-sm">
-                Empower businesses to make confident AI investment decisions with transparent, 
+                Empower businesses to make confident AI investment decisions with transparent,
                 finance-grade analysis tools.
               </p>
             </div>
@@ -42,7 +42,7 @@ const About = () => {
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">Who We Serve</h3>
               <p className="text-muted-foreground text-sm">
-                CFOs, IT leaders, consultants, and anyone evaluating AI projects who needs 
+                CFOs, IT leaders, consultants, and anyone evaluating AI projects who needs
                 to justify investments with hard numbers.
               </p>
             </div>
@@ -53,7 +53,7 @@ const About = () => {
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">Our Approach</h3>
               <p className="text-muted-foreground text-sm">
-                Combine traditional financial modeling (NPV, IRR, payback) with AI-powered 
+                Combine traditional financial modeling (NPV, IRR, payback) with AI-powered
                 market research and risk analysis.
               </p>
             </div>
@@ -64,18 +64,18 @@ const About = () => {
             <h2 className="text-2xl font-bold text-foreground mb-6">Why We Built This</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>
-                After years of watching organizations struggle to quantify the value of AI investments, 
-                we realized there was a gap. Spreadsheets were too complex. Simple calculators were too basic. 
+                After years of watching organizations struggle to quantify the value of AI investments,
+                we realized there was a gap. Spreadsheets were too complex. Simple calculators were too basic.
                 And most tools ignored the nuanced risks and intangible benefits that make AI projects unique.
               </p>
               <p>
-                AI ROI Studio bridges that gap. We've combined the rigor of financial modeling with the 
-                intelligence of AI-powered research to create a tool that gives you a complete picture—not 
-                just a single ROI number, but NPV, IRR, payback period, risk-adjusted returns, and 
+                ROIC bridges that gap. We've combined the rigor of financial modeling with the
+                intelligence of AI-powered research to create a tool that gives you a complete picture—not
+                just a single ROI number, but NPV, IRR, payback period, risk-adjusted returns, and
                 actionable insights.
               </p>
               <p>
-                Whether you're evaluating a customer support chatbot or a predictive maintenance system, 
+                Whether you're evaluating a customer support chatbot or a predictive maintenance system,
                 our goal is to help you make the case with confidence.
               </p>
             </div>
